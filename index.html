@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Minesweeper </title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="resources/index.css">
+</head>
+<body>
+    <div id="bar">
+        
+        <span id="stats" class="bar-container">
+
+            <span>
+                <span class="material-icons">
+                    flag
+                </span>
+                <span id="flagval">
+                    ??
+                </span>
+            </span>
+
+            <span>
+                <span class="material-icons">
+                    alarm
+                </span>
+                <span id="alaramval">
+                    ??
+                </span>
+            </span>
+
+            <span id="open-settings">
+                <span class="material-icons">
+                    settings
+                </span>
+            </span>
+        </span>
+
+        
+
+    </div>
+
+    <div id="settings-space">
+
+    </div>
+
+    <content>
+
+        <div class="content-slide" style="z-index: 3;">
+            <div id="settings">
+                <h1>
+                    Settings
+                </h1>
+                <span>
+                    <label for="input-y">
+                        Y-axis
+                    </label>
+                    <input id="input-y" type="number" value="8"  maxlength="3">
+                </span>
+    
+                <span>
+                    <label for="input-x">
+                        X-axis
+                    </label>
+                    <input id="input-x" type="number" value="8" maxlength="3">
+                </span>
+    
+                <span>
+                    <label>
+                        Mines 
+                    </label>
+                    <input id="input-mines" type="number" value="10" maxlength="2">
+                </span>
+
+                <button id="submit">
+                    <h2>
+                        Start
+                    </h2>
+                </button>
+            </div>
+        </div>
+
+        <div class="content-slide" style="z-index: 1;">
+            <div id="grid-target">
+
+            </div>
+        </div>
+        
+
+    </content>
+
+    
+    
+    <script src="resources/index.js" type="module"></script>
+</body>
+</html>
