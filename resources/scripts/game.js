@@ -37,6 +37,9 @@ class tile {
         // Value is either numb (bombs arround) || a bomb
         this.hasBomb = false;
 
+        // Boolean value to represent if is target of selector
+        this.isTarget = false;
+
         this.checkNeighbours = () =>{
 
             let ifExists = (array, key) => {
@@ -136,7 +139,6 @@ class tile {
         let onRightClick = (e) => {
             e.preventDefault()
             let settings = this.__board__.settings
-            console.log(this.__board__.settings)
 
             switch (this.status) {
                 case 'neutral':
@@ -161,15 +163,98 @@ class tile {
         
         this.__board__.grid.appendChild(this.body);
     }
+
+    _setFocus (bool) {
+        if (bool) {
+            this.isTarget = true;
+            this.body.classList.add('selector-target')
+        } else
+        {
+            this.isTarget = false;
+            this.body.classList.remove('selector-target')
+        }
+    }
 }
 
+class selector {
+    constructor (board) {
+        
+        this.__tiles__ = board.tiles;
+        this.__board__ = board;
 
+        this.maxY = this.__tiles__.length ?? 0;
+        this.maxX = this.__tiles__[0].length ?? 0;
+        this.posY = 0;
+        this.posX = 0;
+        this.currentTile = this.__tiles__[this.posY][this.posX];
+
+
+        this.__makeMove__ = (cur, max) => (a) => {
+            if (!a || typeof a !== 'number') return
+            
+            let b = this[cur] + a;
+            if (b < 0 || b >= this[max]) return
+    
+            this[cur] = b;
+            console.log(this[cur])
+            this.__moveEffect__();
+        }
+        
+
+        this._moveX = this.__makeMove__('posX', 'maxX');
+        this._moveY = this.__makeMove__('posY', 'maxY');
+        this.__moveEffect__();
+
+        window.addEventListener('keypress', e => {
+    
+            let preset = Preset.controls;
+            console.log(e.key)
+
+            switch (e.key) {
+                case (preset.up):
+                    this._moveY(-1);
+                    break;
+                case (preset.left):
+                    this._moveX(-1);
+                    break;
+                case (preset.down):
+                    this._moveY(1);
+                    break;
+                case (preset.right):
+                    this._moveX(1)
+                    break;
+                case (preset.leftClick):
+                    this.currentTile.body.dispatchEvent(new Event('click'))
+                    break;
+                case (preset.rightClick):
+                    this.currentTile.body.dispatchEvent(new Event('contextmenu'))
+                    break;
+
+            }
+        })
+    }
+
+    __moveEffect__ () {
+        let oldTile = this.currentTile;
+        let newTile = this.__tiles__[this.posY][this.posX];
+
+        console.log(this.posX, this.posY)
+        console.log(oldTile.body, newTile.body)
+        oldTile._setFocus(false);
+        newTile._setFocus(true);
+
+        this.currentTile = newTile;
+    }
+}
 
 class board {
     constructor () {
         
         // Super construction from animation
         this.__animation__ = new Animation('grid-target');
+
+        // Init selector
+        this.__selector__;
 
         // Preset values for game
         this.values = {
@@ -264,7 +349,14 @@ class board {
                     window.alert('Won')
                 }
             }
+
+            // Now connect selector
+            this.__selector__ = new selector (this);
         }; 
+
+        
+        
+        
     }
 }
 

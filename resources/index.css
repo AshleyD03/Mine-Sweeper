@@ -204,16 +204,13 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    border: inset 4px #FFC266;
-    border-width: 4px;
 }
 
 .neutral {
     background-color: #FFC266;
     cursor: pointer;
     
-    border: inset 4px transparent;
+    border: inset 4px #FFC266;
     border-width: 4px;
 }
 
@@ -225,6 +222,8 @@ h1 {
 .flagged {
     cursor: pointer;
     background-color: #FFC266;
+    border: inset 4px #FFC266;
+    border-width: 4px;
 }
 
 .flagged::after{
@@ -235,14 +234,24 @@ h1 {
 
 .bombed, .checked {
     cursor: context-menu;
+    border: inset 4px;
+    border-width: 4px;
 }
 
 .bombed {
     background: #414141;
+    border: inset 4px;
+    border-width: 4px;
 }
 
 .bombed::after {
     content: 'warning';
+}
+
+.selector-target {
+    border: inset 8px #596ddd;
+    background-color: #8293f5;
+    box-sizing: border-box;
 }
 
 #open-settings {

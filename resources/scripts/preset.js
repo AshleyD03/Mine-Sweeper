@@ -12,7 +12,6 @@ export const Preset = {
             0: {
                 a: 'blue',
                 b: null,
-                c: 'blue'
             },
             1: {
                 a: 'yellow'
@@ -41,6 +40,14 @@ export const Preset = {
             bomb: {
                 a: 'red'
             }
-    }
+        }
+    },
+    controls: {
+        up: 'w',
+        left: 'a',
+        down: 's',
+        right: 'd',
+        leftClick: 'j',
+        rightClick: 'k'
     }
 };

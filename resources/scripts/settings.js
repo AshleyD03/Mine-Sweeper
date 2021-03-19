@@ -114,8 +114,6 @@ class settings {
 
         }
 
-
-
         this.submit.addEventListener('click', this.startGame)
         this.startGame({settings: {duration: 0}})
 

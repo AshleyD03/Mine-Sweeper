@@ -6,8 +6,6 @@ class animation {
     constructor(id) {
         // Animation body for animation target
         this._animeBody = document.getElementById(id);
-        console.log(this._computed('display'), this._animeBody)
-        let display = this._computed('display')
 
         // Store current Animation
         this.__currentAnimations = [];
@@ -16,21 +14,29 @@ class animation {
             duration: 350
         };
 
+
+        let originalDisplay = this._computed('display')
         this.appear = this.__createAnimation__({
             keyframes: [
-                {opacity: 0},
+                {opacity: 'target'},
                 {opacity: 1}
             ],
-            before: () => {
-                this._animeBody.style.display = display;
+            before: (kf) => {
+                this._animeBody.style.display = originalDisplay;
+                kf[0]['opacity'] = this._computed('opacity');
+                return kf
             }
         })
 
         this.disappear = this.__createAnimation__({
             keyframes: [
-                {opacity: 1},
+                {opacity: 'target'},
                 {opacity: 0}
             ],
+            before: (keyframes) => {
+                keyframes[0]['opacity'] = this._computed('opacity');
+                return keyframes
+            },
             after: () => {
                 this._animeBody.style.display = 'none';
             }
@@ -69,10 +75,10 @@ class animation {
             // Combine options
             let options = Object.assign({}, oldOptions, newOptions);
 
-            // Perform animation & after event
-            if (before && typeof before === 'function') before();
+            // Perform animation & before / after events
+            if (before && typeof before === 'function') keyframes = before(keyframes);
             let anim = this.__animateTo__(this._animeBody, keyframes, options);
-            if (after && typeof after === 'function') setTimeout(anim.addEventListener('finish', after), 100)
+            if (after && typeof after === 'function') anim.addEventListener('finish', after)
 
             // Save manifesto
             this.__currentAnimations.push({
