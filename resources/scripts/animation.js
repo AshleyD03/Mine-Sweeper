@@ -4,62 +4,84 @@
 */
 class animation {
     constructor(id) {
+        // Animation body for animation target
         this._animeBody = document.getElementById(id);
-
-        // bug free animation function from HTTP 203 series
-        // https://www.youtube.com/watch?v=9-6CKCz58A8
-        function animateTo(element, keyframes, options) {
-            const anim = element.animate(keyframes, { ...options, fill: "both" });
-            anim.addEventListener("finish", () => {
-                anim.commitStyles();
-                anim.cancel();
-            });
-            return anim;
-        }
+        console.log(this._computed('display'), this._animeBody)
+        let display = this._computed('display')
 
         // Store current Animation
-        this._currentAnimations = [];
-        this._options_preset = {
+        this.__currentAnimations = [];
+        this.__optionsPreset = {
             easing: 'linear',
-            duration: 550
+            duration: 350
         };
 
-        // Create animation function off it's keyframes & store it's manifesto
-        this._createAnimation = (keyframes, options=this._options_preset) => (newOptions) => {
-            options = Object.assign({}, options, newOptions);
+        this.appear = this.__createAnimation__({
+            keyframes: [
+                {opacity: 0},
+                {opacity: 1}
+            ],
+            before: () => {
+                this._animeBody.style.display = display;
+            }
+        })
 
-            // Create newFrames array that includes preset locations
-            let newFrames = [];
-            keyframes.forEach(frame => {
-                newFrames.push(frame)
+        this.disappear = this.__createAnimation__({
+            keyframes: [
+                {opacity: 1},
+                {opacity: 0}
+            ],
+            after: () => {
+                this._animeBody.style.display = 'none';
+            }
+        })
+    }
 
-                let presetFrame = {};
-                let key = Object.keys(frame)[0];
-                presetFrame[key] = this._animeBody.style[key];
+    // Return either computed object or specific property
+    _computed (property) {
+        let setStyle = this._animeBody.style[property];
+        if (setStyle) return setStyle
 
-                if (presetFrame[key]) newFrames.slice(0, 0, presetFrame);
+        let computed = window.getComputedStyle(this._animeBody);
+
+        if (property && typeof property === 'string') {
+            return computed.getPropertyValue(property)
+        }
+
+        return computed
+    }
+
+
+    // 'bug free' animation function from HTTP 203 series
+    // https://www.youtube.com/watch?v=9-6CKCz58A8
+    __animateTo__ (element, keyframes, options) {
+        const anim = element.animate(keyframes, { ...options, fill: 'both' });
+        anim.addEventListener('finish', () => {
+            anim.commitStyles();
+            anim.cancel();
+        })
+        return anim;
+    }
+
+    // Returns an animation function
+    __createAnimation__ ({keyframes, oldOptions=this.__optionsPreset, before, after}) {
+        return (newOptions) => {
+            // Combine options
+            let options = Object.assign({}, oldOptions, newOptions);
+
+            // Perform animation & after event
+            if (before && typeof before === 'function') before();
+            let anim = this.__animateTo__(this._animeBody, keyframes, options);
+            if (after && typeof after === 'function') setTimeout(anim.addEventListener('finish', after), 100)
+
+            // Save manifesto
+            this.__currentAnimations.push({
+                keyframes: keyframes,
+                options: options,
             });
-            
-            let anim = animateTo(this._animeBody, keyframes, options);
-
-            let manifesto = {
-                keyframes,
-                options,
-            };
-            this._currentAnimations.push(manifesto);
 
             return anim;
-        };
-
-        this.animationUp = this._createAnimation ([
-            {transform: `translateY(-${this._animeBody.offsetHeight + 500}px)`}
-        ])
-
-        this.animationReturn = this._createAnimation ([
-            {transform: 'none'}
-        ])
-        
-
+        }
     }
 }
 

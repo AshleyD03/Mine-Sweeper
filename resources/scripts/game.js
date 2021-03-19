@@ -8,7 +8,7 @@ class tile {
         // Store origin board
         if (!board) return console.log('Error - tile created without board')
         if (typeof x !== 'number' || typeof y !== 'number') return console.log('Error - tile crated without cords')
-        this.board = board;
+        this.__board__ = board;
 
         // Create tile body & append
         this.body = document.createElement('button');
@@ -48,7 +48,7 @@ class tile {
                 }
             }
 
-            let tiles = this.board.tiles;
+            let tiles = this.__board__.tiles;
             let x = this._x;
             let y = this._y;
 
@@ -89,7 +89,6 @@ class tile {
         }
         
         this.setColorTheme = ({a='FFC266', b=a, c=null}) => {
-            console.log(a)
             let style = this.body.getAttribute('style');
             this.body.setAttribute('style', `${style}; color: ${b}; border-color: ${a}`);
             if (c) this.body.style.background = c;
@@ -101,16 +100,16 @@ class tile {
             if (this.status === 'neutral') {
 
                 if (this.hasBomb === true) {
-                    this.setColorTheme(this.board.tileColorSet['bomb'])
+                    this.setColorTheme(this.__board__.tileColorSet['bomb'])
                     this.updateStatus('bombed', true);
-                    this.board.revealBombs()
+                    this.__board__.revealBombs()
                     return
                 }
 
                 let {count, neighbours} = this.checkNeighbours();
 
-                if (this.board.tileColorSet[count]) {
-                    this.setColorTheme(this.board.tileColorSet[count])
+                if (this.__board__.tileColorSet[count]) {
+                    this.setColorTheme(this.__board__.tileColorSet[count])
                 }
 
                 
@@ -127,8 +126,8 @@ class tile {
                 }
 
                 this.updateStatus('checked', false, count);
-                this.board.addLeftClicks(1);
-                this.board.checkWinCondition();
+                this.__board__.addspaceChecks(1);
+                this.__board__.checkWinCondition();
             }
         }
         this.body.addEventListener('click', onLeftClick)
@@ -136,8 +135,8 @@ class tile {
         // Right click event
         let onRightClick = (e) => {
             e.preventDefault()
-            let settings = this.board.settings
-            console.log(this.board.settings)
+            let settings = this.__board__.settings
+            console.log(this.__board__.settings)
 
             switch (this.status) {
                 case 'neutral':
@@ -151,7 +150,7 @@ class tile {
                     break
             }
 
-            this.board.checkWinCondition();
+            this.__board__.checkWinCondition();
 
             return false
         }
@@ -160,19 +159,19 @@ class tile {
         this._x = x;
         this._y = y;
         
-        this.board.grid.appendChild(this.body);
+        this.__board__.grid.appendChild(this.body);
     }
 }
 
 
 
-class board extends Animation {
+class board {
     constructor () {
         
         // Super construction from animation
-        super( 'grid-target' )
+        this.__animation__ = new Animation('grid-target');
 
-        // Values for game
+        // Preset values for game
         this.values = {
             x: 6, 
             y: 6, 
@@ -185,14 +184,12 @@ class board extends Animation {
         // Grid element and tiles array
         this.grid = document.getElementById('grid-target');
         this.tiles = [];
-        this.animationUp(0);
         this.tileColorSet = Preset.color_presets.tiles;
-        console.log(this.tileColorSet);
 
         // Check win condition
-        let leftClicks = 0;  
-        this.setLeftClicks = (a) => leftClicks = a;
-        this.addLeftClicks = (a) => leftClicks += a;
+        let spaceChecks = 0;  
+        this.setspaceChecks = (a) => spaceChecks = a;
+        this.addspaceChecks = (a) => spaceChecks += a;
 
         // Create a new board, deleting the original board
         this.createBoard = () => {
@@ -210,7 +207,6 @@ class board extends Animation {
             
             // Create tiles to fill board
             this.tiles = [];
-            console.log(x, y)
             for (let iY = 0; iY < y; iY++) {
                 this.tiles.push([])
                 for (let iX = 0; iX < x; iX++) {
@@ -218,9 +214,6 @@ class board extends Animation {
                     this.tiles[iY].push(newTile);
                 }
             }
-
-            // Animate board to go down
-            this.animationReturn()
 
             let bombLocations = [];
             let notBombs = 0;
@@ -256,6 +249,9 @@ class board extends Animation {
             } while (loop < m)
             notBombs = x * y - m;
 
+            // Reset left clicks
+            spaceChecks = 0;
+
             this.revealBombs = () => {
                 bombLocations.forEach(loc => {
                     let tile = this.tiles[loc.x][loc.y];
@@ -264,7 +260,7 @@ class board extends Animation {
                 })
             }
             this.checkWinCondition = () => {
-                if (leftClicks === notBombs) {
+                if (spaceChecks === notBombs) {
                     window.alert('Won')
                 }
             }

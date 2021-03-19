@@ -1,3 +1,11 @@
+/* 
+    Includes all preset settings
+    
+    color_presets: 
+        -colors for tiles
+*/
+
+
 export const Preset = {
     color_presets: {
         tiles: {

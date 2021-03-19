@@ -27,15 +27,16 @@ class clock {
             }
 
             return new Promise(loop);
-        }
 
-        this.pause = () => {
-            clearInterval(this.looper)
         }
-        
-        this.unPause = () => {
-            this.start(this.time)
-        }
+    }
+
+    pause () {
+        clearInterval(this.looper)
+    }
+
+    unPause (set) {
+        this.start(set ?? this.time)
     }
 }
 

@@ -6,15 +6,15 @@ import { Clock } from './clock.js'
     Requires board for settings to run.
 */
 
-class settings extends Animation {
+class settings {
     constructor (board=null) {
 
         // Super construction from animation
-        super( 'settings' )
+        this.__animation__ = new Animation ('settings')
         // Home Board
-        this.board = board;
+        this.__board__ = board;
         // Initialise clock
-        this.clock = new Clock('alaramval')
+        this.__clock__ = new Clock('alaramval')
 
 
 
@@ -50,17 +50,17 @@ class settings extends Animation {
             // Go visible
             if (canSee === true) {
                 this.canSee = true;
-                this.board.animationUp()
-                this.animationReturn()
-                this.clock.pause()
+                this.__animation__.appear()
+                this.__board__.__animation__.disappear()
+                this.__clock__.pause()
             } else 
 
             // Hide
             if (canSee === false) {
                 this.canSee = false;
-                this.board.animationReturn();
-                this.animationUp();
-                this.clock.unPause();
+                this.__animation__.disappear()
+                this.__board__.__animation__.appear()
+                this.__clock__.unPause();
             }
 
         }   
@@ -73,7 +73,6 @@ class settings extends Animation {
         let flagLength = 0;
 
         this.flagSetLength = (length=flagLength) => {
-            console.log(length)
             let node = document.getElementById('flagval');
             flagLength = length;
             node.innerHTML = length;
@@ -95,29 +94,32 @@ class settings extends Animation {
 
 
         // Begin game section
-        this.startGame = e => {
+        this.startGame = (e) => {
             // Set board values and create board
             let values = this.getValues();
-            this.board.values = values;
+            this.__board__.values = values;
 
             // Hide settings nad reveal board
-            this.board.createBoard()
-            this.animationUp()
+            this.__board__.createBoard()
+            this.__board__.__animation__.appear(e.settings)
+            this.__animation__.disappear(e.settings);
             this.canSee = false;
 
             // Begin timer
-            this.clock.time = 0;
-            this.clock.start()
+            this.__clock__.time = 0;
+            this.__clock__.start()
 
             // Set flags
             this.flagSetLength(parseInt(values.m))
 
         }
 
-        this.submit.addEventListener('click', this.startGame)
-        this.submit.click()
 
-        this.board.settings = this;
+
+        this.submit.addEventListener('click', this.startGame)
+        this.startGame({settings: {duration: 0}})
+
+        this.__board__.settings = this;
     }
 }
 
