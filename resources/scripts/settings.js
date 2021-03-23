@@ -31,14 +31,33 @@ class settings {
             return values;
         };
 
-
-        
         // Submit body parts
         this.body = document.getElementById('settings');
         this.bar = document.getElementById('bar');
         this.submit = document.getElementById('submit');
         document.getElementById('settings-space').style.height = `${this.bar.offsetHeight}px`;
 
+
+        let sections = Array.from(document.getElementsByClassName('settings-section'));
+        let miniBar = Array.from(document.getElementById('settings-mini-bar').children);
+        miniBar.forEach(option => option.addEventListener('click', e => {
+            miniBar.forEach(bar => bar.classList.remove('selected'))
+            option.classList.add('selected')
+            let val = option.value;
+            
+            
+            let ele = document.getElementById(val);
+
+            sections.forEach(sect => {
+                if (sect === ele) return
+                sect.style.opacity = 0;
+                sect.style.pointerEvents = 'none'
+            })
+
+            ele.style.pointerEvents = 'all';
+            ele.style.opacity = 1;
+        }))
+        miniBar[0].click();
 
 
         // Reveal settings button
@@ -115,7 +134,7 @@ class settings {
         }
 
         this.submit.addEventListener('click', this.startGame)
-        this.startGame({settings: {duration: 0}})
+        //this.startGame({settings: {duration: 0}})
 
         this.__board__.settings = this;
     }

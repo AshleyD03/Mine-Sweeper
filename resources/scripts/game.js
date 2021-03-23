@@ -118,7 +118,7 @@ class tile {
                 
 
                 // Begin loop algorithm
-                if (count === 0) {    
+                if (count === 0 && !this.hasBomb) {    
                     count = '';
 
                     neighbours.forEach(tile => {
@@ -151,8 +151,6 @@ class tile {
                     settings.flagRemove(x, y);
                     break
             }
-
-            this.__board__.checkWinCondition();
 
             return false
         }
@@ -238,8 +236,6 @@ class selector {
         let oldTile = this.currentTile;
         let newTile = this.__tiles__[this.posY][this.posX];
 
-        console.log(this.posX, this.posY)
-        console.log(oldTile.body, newTile.body)
         oldTile._setFocus(false);
         newTile._setFocus(true);
 
@@ -283,8 +279,6 @@ class board {
 
             // Clear and create size
             this.grid.innerHTML = '';
-            let sizeX = 1 / this.x;
-            let sizeY = 1 / this.y;
 
             // Set columns
             this.grid.style.display = 'grid';
@@ -306,8 +300,8 @@ class board {
             let addBomb = (x, y) => {
                 try {
                     
-                    if (!this.tiles[x][y].hasBomb) {
-                        this.tiles[x][y].hasBomb = true;
+                    if (!this.tiles[y][x].hasBomb) {
+                        this.tiles[y][x].hasBomb = true;
                         return true
                     }
                     else return false
@@ -321,6 +315,7 @@ class board {
             do {
                 let randX = Math.floor(Math.random() * x);
                 let randY = Math.floor(Math.random() * y);
+                console.log(randX, randY)
 
                 let added = addBomb(randX, randY);
 
@@ -339,7 +334,7 @@ class board {
 
             this.revealBombs = () => {
                 bombLocations.forEach(loc => {
-                    let tile = this.tiles[loc.x][loc.y];
+                    let tile = this.tiles[loc.y][loc.x];
                     tile.setColorTheme(this.tileColorSet['bomb'])
                     tile.updateStatus('bombed', true);
                 })
@@ -358,6 +353,7 @@ class board {
         
         
     }
+    
 }
 
 export const Board = board;

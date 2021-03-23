@@ -55,32 +55,50 @@
                 <h1>
                     Settings
                 </h1>
-                <span>
-                    <label for="input-y">
-                        Y-axis
-                    </label>
-                    <input id="input-y" type="number" value="12"  maxlength="3">
-                </span>
-    
-                <span>
-                    <label for="input-x">
-                        X-axis
-                    </label>
-                    <input id="input-x" type="number" value="12" maxlength="3">
-                </span>
-    
-                <span>
-                    <label>
-                        Mines 
-                    </label>
-                    <input id="input-mines" type="number" value="20" maxlength="2">
-                </span>
+                <div class="bar" id="settings-mini-bar">
+                    <button value="board-settings">
+                        Board
+                    </button>
+                    <button value="control-settings">
+                        Controls
+                    </button>
+                </div>
 
-                <button id="submit">
-                    <h2>
-                        Start
-                    </h2>
-                </button>
+                <div class="section-container">
+                    <div id="board-settings" class="settings-section">
+                        <span>
+                            <label for="input-y">
+                                Y-axis
+                            </label>
+                            <input id="input-y" type="number" value="12"  maxlength="3">
+                        </span>
+            
+                        <span>
+                            <label for="input-x">
+                                X-axis
+                            </label>
+                            <input id="input-x" type="number" value="12" maxlength="3">
+                        </span>
+            
+                        <span>
+                            <label>
+                                Mines 
+                            </label>
+                            <input id="input-mines" type="number" value="20" maxlength="2">
+                        </span>
+        
+                        <button id="submit">
+                            <h2>
+                                Start
+                            </h2>
+                        </button>
+                    </div>
+    
+                    <div id="control-settings" class="settings-section">
+                        Controlls
+                    </div>
+                </div>
+                
             </div>
         </div>
 
@@ -89,12 +107,8 @@
 
             </div>
         </div>
-        
-
     </content>
 
-    
-    
     <script src="resources/index.js" type="module"></script>
 </body>
 </html>
