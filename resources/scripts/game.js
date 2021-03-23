@@ -177,15 +177,22 @@ class tile {
 class selector {
     constructor (board) {
         
-        this.__tiles__ = board.tiles;
         this.__board__ = board;
+        this.__active = false;
 
-        this.maxY = this.__tiles__.length ?? 0;
-        this.maxX = this.__tiles__[0].length ?? 0;
-        this.posY = 0;
-        this.posX = 0;
-        this.currentTile = this.__tiles__[this.posY][this.posX];
+        // Set key values
+        this.maxY, this.maxX, this.posY, this.posX, this.currentTile, this.__tiles__;
 
+        this.__initialise= () => {
+            this.__tiles__ = board.tiles;
+            this.maxY = this.__tiles__.length ?? 0;
+            this.maxX = this.__tiles__[0].length ?? 0;
+            this.posY = 0;
+            this.posX = 0;
+            this.currentTile = this.__tiles__[this.posY][this.posX];
+            this.__active = true;
+            this.__moveEffect__();
+        }
 
         this.__makeMove__ = (cur, max) => (a) => {
             if (!a || typeof a !== 'number') return
@@ -194,19 +201,16 @@ class selector {
             if (b < 0 || b >= this[max]) return
     
             this[cur] = b;
-            console.log(this[cur])
             this.__moveEffect__();
         }
         
 
         this._moveX = this.__makeMove__('posX', 'maxX');
         this._moveY = this.__makeMove__('posY', 'maxY');
-        this.__moveEffect__();
 
-        window.addEventListener('keypress', e => {
+        this.__onKeyPress__ = e => {
     
             let preset = Preset.controls;
-            console.log(e.key)
 
             switch (e.key) {
                 case (preset.up):
@@ -229,10 +233,12 @@ class selector {
                     break;
 
             }
-        })
+        }
+        window.addEventListener('keypress', this.__onKeyPress__)
     }
 
     __moveEffect__ () {
+        if (!this.__active) return
         let oldTile = this.currentTile;
         let newTile = this.__tiles__[this.posY][this.posX];
 
@@ -250,7 +256,7 @@ class board {
         this.__animation__ = new Animation('grid-target');
 
         // Init selector
-        this.__selector__;
+        this.__selector__ = new selector (this);
 
         // Preset values for game
         this.values = {
@@ -346,7 +352,7 @@ class board {
             }
 
             // Now connect selector
-            this.__selector__ = new selector (this);
+            this.__selector__.__initialise();
         }; 
 
         
